@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Legacy Premier Barbershop | Dashboard</title>
+  <link rel="icon" href="/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="shell">
+
+    <!-- ========== SIDEBAR ========== -->
+    <aside class="sidebar">
+      <div class="side-brand">
+        <div class="ring"><img src="/logo.png" alt="Legacy"></div>
+        <div>
+          <div class="name">Legacy</div>
+          <div class="tagline">Premier Barbershop</div>
+        </div>
+      </div>
+
+      <nav class="nav" id="tabs">
+        <button class="tab active" data-tab="dash" data-title="Dashboard"><span class="ico">📊</span>Dashboard</button>
+        <button class="tab" data-tab="appts" data-title="Appointments"><span class="ico">📅</span>Appointments</button>
+        <button class="tab" data-tab="customers" data-title="Customers"><span class="ico">👥</span>Customers</button>
+        <button class="tab" data-tab="services" data-title="Services"><span class="ico">✂️</span>Services</button>
+        <button class="tab" data-tab="wa" data-title="WhatsApp"><span class="ico">💬</span>WhatsApp</button>
+      </nav>
+
+      <div class="side-foot">
+        <div class="who"><span class="avatar" id="avatar">A</span><span id="who"></span></div>
+        <button class="btn small" id="logoutBtn">Logout</button>
+      </div>
+    </aside>
+
+    <!-- ========== CONTENT ========== -->
+    <div class="content">
+      <div class="page-head">
+        <h1 id="pageTitle">Dashboard</h1>
+        <div class="date" id="todayDate"></div>
+      </div>
+
+      <main>
+        <!-- DASHBOARD -->
+        <section class="panel active" id="dash">
+          <div id="waBanner"></div>
+          <div class="linkbox">
+            <span>🔗 Customer booking link:</span>
+            <code id="bookLink"></code>
+            <button class="btn small" id="copyLink">Copy</button>
+            <span style="color:#6b7380">Ye link Instagram/WhatsApp par share karo.</span>
+          </div>
+
+          <div class="online-box" id="onlineBox">
+            <h2>🆕 Nayi online bookings (<span id="sOnline">0</span>)</h2>
+            <div class="table-wrap"><table id="onlineTable"></table></div>
+          </div>
+
+          <div class="stats">
+            <div class="stat"><div class="ico">📅</div><div class="n" id="sToday">-</div><div class="l">Aaj ki appointments</div></div>
+            <div class="stat"><div class="ico">👥</div><div class="n" id="sCustomers">-</div><div class="l">Total customers</div></div>
+            <div class="stat"><div class="ico">✂️</div><div class="n" id="sServices">-</div><div class="l">Services</div></div>
+            <div class="stat gold"><div class="ico">💰</div><div class="n" id="sRevenue">-</div><div class="l">Is mahine ki kamai</div></div>
+          </div>
+          <h2>Aaj ka schedule</h2>
+          <div class="table-wrap"><table id="todayTable"></table></div>
+        </section>
+
+        <!-- APPOINTMENTS -->
+        <section class="panel" id="appts">
+          <div class="toolbar">
+            <h2 class="grow" style="margin:0">Saari appointments</h2>
+            <button class="btn primary" id="newAppt">+ Nayi Appointment</button>
+          </div>
+          <div class="table-wrap"><table id="apptTable"></table></div>
+        </section>
+
+        <!-- CUSTOMERS -->
+        <section class="panel" id="customers">
+          <div class="toolbar">
+            <input class="grow" id="custSearch" placeholder="🔍  Naam ya phone se dhundo...">
+            <button class="btn primary" id="newCust">+ Naya Customer</button>
+          </div>
+          <div class="table-wrap"><table id="custTable"></table></div>
+        </section>
+
+        <!-- SERVICES -->
+        <section class="panel" id="services">
+          <div class="toolbar">
+            <h2 class="grow" style="margin:0">Services aur rates</h2>
+            <button class="btn primary" id="newSvc">+ Nayi Service</button>
+          </div>
+          <div class="table-wrap"><table id="svcTable"></table></div>
+        </section>
+
+        <!-- WHATSAPP -->
+        <section class="panel" id="wa">
+          <h2>WhatsApp message bhejo</h2>
+          <div class="toolbar">
+            <input style="max-width:220px" id="waTo" placeholder="Phone (jaise 9876543210)">
+            <input class="grow" id="waText" placeholder="Message likho...">
+            <button class="btn wa" id="waSend">Bhejo</button>
+          </div>
+          <h3>Message history</h3>
+          <div class="table-wrap"><table id="waTable"></table></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- Reusable modal -->
+  <div class="modal-bg" id="modalBg">
+    <div class="modal">
+      <h2 id="mTitle"></h2>
+      <div id="mBody"></div>
+      <div class="error" id="mErr"></div>
+      <div class="actions">
+        <button class="btn" id="mCancel">Cancel</button>
+        <button class="btn primary" id="mSave">Save</button>
+      </div>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

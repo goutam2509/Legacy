@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Appointment Book Karo | Legacy Premier Barbershop</title>
+  <link rel="icon" href="/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="book-page">
+    <div class="book-card">
+      <div class="head">
+        <div class="ring"><img src="/logo.png" alt="Legacy Premier Barbershop"></div>
+        <h1>Legacy</h1>
+        <div class="tag">Premier Barbershop</div>
+      </div>
+
+      <!-- Form -->
+      <form id="bookForm">
+        <p class="sub">Apni appointment book karo. Hum aapko confirm karenge.</p>
+
+        <label for="name">Aapka naam</label>
+        <input id="name" maxlength="100" placeholder="Jaise Rahul Sharma" required>
+
+        <label for="phone">Phone / WhatsApp number</label>
+        <input id="phone" type="tel" inputmode="numeric" placeholder="9876543210" required>
+
+        <label for="service">Service</label>
+        <select id="service" required><option value="">Load ho raha hai...</option></select>
+
+        <label for="when">Date aur time</label>
+        <input id="when" type="datetime-local" required>
+
+        <label for="notes">Koi note (optional)</label>
+        <textarea id="notes" rows="2" maxlength="500" placeholder="Jaise: beard ke saath"></textarea>
+
+        <!-- Bot trap: insaan ise nahi dekhta -->
+        <div class="hp" aria-hidden="true"><input id="website" tabindex="-1" autocomplete="off"></div>
+
+        <button class="btn primary block" type="submit" id="submitBtn">Appointment book karo</button>
+        <div class="error" id="err"></div>
+      </form>
+
+      <!-- Success -->
+      <div class="book-done" id="done" style="display:none">
+        <div class="tick">✅</div>
+        <h2>Booking mil gayi!</h2>
+        <p>Dhanyavaad! Hum aapko jald WhatsApp par confirm karenge.</p>
+        <button class="btn block" id="againBtn" style="background:transparent;color:#d7dbe2;border-color:#343a45">Nayi booking</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const money = (n) => '₹' + Number(n || 0).toLocaleString('en-IN');
+
+    // Aaj se pehle ka time na chun sake
+    function setMinTime() {
+      const d = new Date(Date.now() + 30 * 60000);
+      d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+      $('when').min = d.toISOString().slice(0, 16);
+    }
+    setMinTime();
+
+    async function loadServices() {
+      try {
+        const res = await fetch('/api/public/services');
+        const list = await res.json();
+        $('service').innerHTML = '<option value="">Service chuno</option>' +
+          list.map(s => `<option value="${s.id}">${s.name.replace(/</g, '&lt;')} - ${money(s.price)} (${s.durationMinutes} min)</option>`).join('');
+      } catch (e) {
+        $('service').innerHTML = '<option value="">Services load nahi hui</option>';
+      }
+    }
+    loadServices();
+
+    $('bookForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      $('err').textContent = '';
+      $('submitBtn').disabled = true;
+      $('submitBtn').textContent = 'Bhej rahe hain...';
+      try {
+        const res = await fetch('/api/public/book', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: $('name').value,
+            phone: $('phone').value,
+            serviceId: Number($('service').value),
+            startTime: $('when').value,
+            notes: $('notes').value,
+            website: $('website').value
+          })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || 'Booking nahi ho payi, dobara try karo');
+        $('bookForm').style.display = 'none';
+        $('done').style.display = 'block';
+      } catch (ex) {
+        $('err').textContent = ex.message;
+      }
+      $('submitBtn').disabled = false;
+      $('submitBtn').textContent = 'Appointment book karo';
+    });
+
+    $('againBtn').onclick = () => {
+      $('bookForm').reset();
+      setMinTime();
+      $('done').style.display = 'none';
+      $('bookForm').style.display = 'block';
+    };
+  </script>
+</body>
+</html>

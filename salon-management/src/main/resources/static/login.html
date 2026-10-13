@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Legacy Premier Barbershop | Login</title>
+  <link rel="icon" href="/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="login-page">
+
+    <!-- Left: brand panel -->
+    <section class="login-brand">
+      <div class="logo-ring"><img src="/logo.png" alt="Legacy Premier Barbershop"></div>
+      <h1>Legacy</h1>
+      <div class="tag">Premier Barbershop</div>
+      <div class="divider"></div>
+      <p class="sub">Appointments, customers aur WhatsApp messages. Poora salon ek hi dashboard se sambhalo.</p>
+    </section>
+
+    <!-- Right: login form -->
+    <section class="login-form-side">
+      <form class="login-card" id="loginForm">
+        <img class="mini-logo" src="/logo.png" alt="Legacy">
+        <h2>Welcome Back</h2>
+        <p class="hint">Dashboard mein jaane ke liye login karo</p>
+
+        <label for="username">Username</label>
+        <input id="username" name="username" autocomplete="username" placeholder="Apna username likho" required autofocus>
+
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" placeholder="••••••••" required>
+
+        <button class="btn primary block" type="submit" id="loginBtn">Login</button>
+        <div class="error" id="err"></div>
+        <div class="foot">© Legacy Premier Barbershop</div>
+      </form>
+    </section>
+
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const err = document.getElementById('err');
+      const btn = document.getElementById('loginBtn');
+      err.textContent = '';
+      btn.disabled = true; btn.textContent = 'Please wait...';
+      const body = new URLSearchParams({
+        username: document.getElementById('username').value,
+        password: document.getElementById('password').value
+      });
+      try {
+        const res = await fetch('/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body
+        });
+        if (res.ok) {
+          location.href = '/index.html';
+          return;
+        }
+        err.textContent = 'Username ya password galat hai';
+      } catch (ex) {
+        err.textContent = 'Server se connect nahi ho pa raha';
+      }
+      btn.disabled = false; btn.textContent = 'Login';
+    });
+  </script>
+</body>
+</html>
